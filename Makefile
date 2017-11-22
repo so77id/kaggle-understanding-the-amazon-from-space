@@ -124,6 +124,10 @@ run-inception rt: docker-print
 run-dataset rd: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make dataset CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
+
+run-test rte: docker-print
+	@$(DOCKER_RUN_COMMAND) bash;
+
 #PRIVATE
 docker-print psd:
 ifeq ($(GPU), true)
