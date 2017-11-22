@@ -3,7 +3,7 @@
         "parameters":{
             "n_labels":17,
             "batch_size":20,
-            "n_epoch":1,
+            "n_epoch":5,
             "dropout_keep_prob":0.2
         },
         "metadata":{

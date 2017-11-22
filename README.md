@@ -19,4 +19,4 @@ Classes:
 13 : road
 14 : selective_logging
 15 : slash_burn
-16 : water]
+16 : water
