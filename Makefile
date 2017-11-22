@@ -121,7 +121,7 @@ endif
 run-inception rt: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make train-inception CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
-run-dataset rt: docker-print
+run-dataset rd: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make dataset CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
 #PRIVATE
