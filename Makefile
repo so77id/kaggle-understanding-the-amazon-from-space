@@ -85,6 +85,7 @@ BASH_COMMAND=bash
 TENSORBOARD_COMMAND=tensorboard
 WGET_COMMAND=wget
 MV_COMMAND=mv
+MKDIR_COMMAND=mkdir
 
 
 MODELS_FOLDER=./models
@@ -103,6 +104,7 @@ CREATE_H5_FILE=$(PREPROCESSING_FOLDER)/create_h5_files.py
 ############################ CODE COMMANDS ###################################
 ##############################################################################
 setup s: excuda-devise
+	@$(MKDIR_COMMAND) $(IMAGENET_CHECKPOINTS_FOLDER)
 	@$(WGET_COMMAND) https://github.com/kentsommer/keras-inceptionV4/releases/download/2.0/inception-v4_weights_tf_dim_ordering_tf_kernels.h5
 	@$(MV_COMMAND) inception-v4_weights_tf_dim_ordering_tf_kernels.h5 $(IMAGENET_CHECKPOINTS_FOLDER)
 
