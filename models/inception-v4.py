@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from keras.models import Sequential
-from keras.optimizers import SGD
+from keras.optimizers import RMSprop
 from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, Dropout, Flatten, merge, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
@@ -268,7 +268,7 @@ def inception_v4_model(img_rows, img_cols, color_type=1, num_classes=None, dropo
     net_ft = AveragePooling2D((8,8), border_mode='valid')(net)
     net_ft = Dropout(dropout_keep_prob)(net_ft)
     net_ft = Flatten()(net_ft)
-    predictions_ft = Dense(output_dim=num_classes, activation='softmax')(net_ft)
+    predictions_ft = Dense(output_dim=num_classes, activation='sigmoid')(net_ft)
 
     model = Model(inputs, predictions_ft, name='inception_v4')
 
@@ -298,7 +298,25 @@ def load_dataset(CONFIG):
 
     return {"train":{"X":np.array(X), "Y":np.array(Y, dtype=np.int)}, "test":{"X":test_X_final}}
 
+#http://arseny.info/2017/f-beta-score-for-keras.html
+def fbeta(y_true, y_pred, threshold_shift=0):
+    beta = 2
 
+    # just in case of hipster activation at the final layer
+    y_pred = K.clip(y_pred, 0, 1)
+
+    # shifting the prediction threshold from .5 if needed
+    y_pred_bin = K.round(y_pred + threshold_shift)
+
+    tp = K.sum(K.round(y_true * y_pred_bin)) + K.epsilon()
+    fp = K.sum(K.round(K.clip(y_pred_bin - y_true, 0, 1)))
+    fn = K.sum(K.round(K.clip(y_true - y_pred, 0, 1)))
+
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+
+    beta_squared = beta ** 2
+    return (beta_squared + 1) * (precision * recall) / (beta_squared * precision + recall)
 
 def main(argv):
     # construct the argument parser and parse the arguments
@@ -328,8 +346,9 @@ def main(argv):
     # # Load our model
     model = inception_v4_model(img_rows, img_cols, channel, num_classes, dropout_keep_prob=dropout_keep_prob)
     # # Learning rate is changed to 0.001
-    sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
-    model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+    rmsprop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
+    # sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
+    model.compile(optimizer=rmsprop, loss='binary_crossentropy', metrics=[fbeta])
 
 
     # # Start Fine-tuning
