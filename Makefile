@@ -85,8 +85,14 @@ MV_COMMAND=mv
 
 
 MODELS_FOLDER=./models
+PREPROCESSING_FOLDER=./preprocessing
 
 TRAIN_INCEPTION_FILE=$(MODELS_FOLDER)/inception-v4.py
+
+
+CREATE_H5_FILE=$(PREPROCESSING_FOLDER)/create_h5_files.py
+
+
 
 
 ##############################################################################
@@ -97,6 +103,9 @@ train-inception t: excuda-devise
 	@$(PYTHON_COMMAND) $(TRAIN_INCEPTION_FILE) -c $(CONFIG_FILE)
 
 
+dataset d: excuda-devise
+	@echo "[preprocessing] preprocessing dataset..."
+	@$(PYTHON_COMMAND) $(CREATE_H5_FILE) -c $(CONFIG_FILE)
 
 excuda-devise ecd:
 ifeq ($(GPU), true)
@@ -111,6 +120,9 @@ endif
 ##############################################################################
 run-inception rt: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make train-inception CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
+
+run-dataset rt: docker-print
+	@$(DOCKER_RUN_COMMAND) bash -c "make dataset CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
 #PRIVATE
 docker-print psd:
