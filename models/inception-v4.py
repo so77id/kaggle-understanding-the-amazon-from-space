@@ -340,8 +340,10 @@ def main(argv):
                   verbose=1
               )
 
-    # # Make predictions
-    # predictions_valid = model.predict(X_valid, batch_size=batch_size, verbose=1)
+    # Make predictions
+    predictions_valid = model.predict(dataset["test"]["X"], batch_size=batch_size, verbose=1)
+
+    print(predictions_valid)
 
     # # Cross-entropy loss score
     # score = log_loss(Y_valid, predictions_valid)
