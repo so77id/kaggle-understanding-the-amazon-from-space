@@ -4,11 +4,16 @@ import numpy as np
 import h5py
 import argparse
 import sys
+import os
 import json
 
 from collections import namedtuple
 
+import keras
+from keras.utils import np_utils
 
+
+from sklearn import preprocessing
 
 def load_configuration(configuration_file):
     with open(configuration_file, 'r') as content_file:
@@ -32,10 +37,19 @@ def main(argv):
     test_path = "{}/{}".format(dataset_path, CONFIG.dataset.folders.test_folder)
     test_add_path = "{}/{}".format(dataset_path, CONFIG.dataset.folders.test_add_folder)
 
+    h5_path = "{}/{}".format(dataset_path, CONFIG.dataset.folders.h5_folder)
 
+    print(h5_path)
+    if not os.path.exists(h5_path):
+        os.makedirs(h5_path, exist_ok=True)
 
-    # Creating trainning dataset
-    print("Creating trainning dataset")
+    # Get varaibles
+    width = CONFIG.dataset.parameters.width
+    height = CONFIG.dataset.parameters.height
+    channels = CONFIG.dataset.parameters.channels
+
+    # Creating train dataset
+    print("Creating train dataset")
     train_list_filename = "{}/{}".format(lists_path, CONFIG.dataset.lists.train)
 
     train_filename_lists = []
@@ -49,15 +63,101 @@ def main(argv):
             labels_list = labels.split('\n')[0].split(" ")
 
             train_filename_lists.append(filename)
-            train_labels_lists.append(filename)
+            train_labels_lists.append(labels_list)
 
-    # hdf5_train_file = "{}/{}".format(CONFIG.dataset.h5.path, CONFIG.dataset.h5.train)
+    # processing labels
+    list_labels = [item for sublist in train_labels_lists for item in sublist]
+    encoder = preprocessing.LabelEncoder()
+    encoder.fit(list_labels)
+    n_labels = encoder.classes_.shape[0]
 
-    # h5f_t = h5py.File(hdf5_train_file, 'w')
-    # h5f_t.create_dataset('X', (num_lines,10,Resize,Resize,3))
+    train_categorical_labels = []
+    for label_per_file in train_labels_lists:
+        encoded_labels = encoder.transform(label_per_file)
+        categorical_labels = np_utils.to_categorical(encoded_labels, n_labels).sum(axis=0)
+        train_categorical_labels.append(categorical_labels)
+
+    # creating h5 files
+    hdf5_train_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.train_file)
+
+    h5f_t = h5py.File(hdf5_train_file, 'w')
+
+    img_list = []
+    for filename in train_filename_lists:
+        print("Processing:", filename)
+        img = cv2.imread(filename)
+        img = cv2.resize(img, (width, height))
+
+        img_list.append(img)
+
+    h5f_t.create_dataset('X', data=img_list)
+    h5f_t.create_dataset('Y', data=train_categorical_labels)
+
+    h5f_t.close()
+
+    # Creating test dataset
+    print("Creating test dataset")
+    test_list_filename = "{}/{}".format(lists_path, CONFIG.dataset.lists.test)
+
+    test_filename_lists = []
+
+    with open(test_list_filename, 'r') as input_file:
+        for line in input_file:
+            filename = line.split('\n')[0]
+
+            filename = "{}/{}".format(test_path, filename)
+
+            test_filename_lists.append(filename)
+
+    # creating h5 files
+    hdf5_test_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_file)
+
+    h5f_t = h5py.File(hdf5_test_file, 'w')
+
+    img_list = []
+    for filename in test_filename_lists:
+        print("Processing:", filename)
+        img = cv2.imread(filename)
+        img = cv2.resize(img, (width, height))
+
+        img_list.append(img)
+
+    h5f_t.create_dataset('X', data=img_list)
+
+    h5f_t.close()
+
+    # Creating test add dataset
+    print("Creating test add dataset")
+    test_add_list_filename = "{}/{}".format(lists_path, CONFIG.dataset.lists.test_add)
+
+    test_add_filename_lists = []
+
+    with open(test_add_list_filename, 'r') as input_file:
+        for line in input_file:
+            filename = line.split('\n')[0]
+
+            filename = "{}/{}".format(test_add_path, filename)
+
+            test_add_filename_lists.append(filename)
+
+    # creating h5 files
+    hdf5_test_add_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_add_file)
+
+    h5f_t = h5py.File(hdf5_test_add_file, 'w')
+
+    img_list = []
+    for filename in test_add_filename_lists:
+        print("Processing:", filename)
+        img = cv2.imread(filename)
+        img = cv2.resize(img, (width, height))
+
+        img_list.append(img)
+
+    h5f_t.create_dataset('X', data=img_list)
+
+    h5f_t.close()
 
 
-    print("hola")
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))

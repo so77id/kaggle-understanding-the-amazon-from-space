@@ -2,14 +2,29 @@
 
 from keras.models import Sequential
 from keras.optimizers import SGD
-from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, merge, Reshape, Activation
+from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, Dropout, Flatten, merge, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras import backend as K
 
 from sklearn.metrics import log_loss
 
-from load_cifar10 import load_cifar10_data
+import numpy as np
+
+import h5py
+import argparse
+import sys
+import os
+import json
+
+from collections import namedtuple
+
+def load_configuration(configuration_file):
+    with open(configuration_file, 'r') as content_file:
+        content = content_file.read()
+
+    return json.loads(content, object_hook=lambda d: namedtuple('Configuration', d.keys())(*d.values()))
+
 
 def conv2d_bn(x, nb_filter, nb_row, nb_col,
               border_mode='same', subsample=(1, 1), bias=False):
@@ -176,7 +191,7 @@ def inception_v4_base(input):
 
     # 35 x 35 x 384
     # 4 x Inception-A blocks
-    for idx in xrange(4):
+    for idx in range(4):
       net = block_inception_a(net)
 
     # 35 x 35 x 384
@@ -185,7 +200,7 @@ def inception_v4_base(input):
 
     # 17 x 17 x 1024
     # 7 x Inception-B blocks
-    for idx in xrange(7):
+    for idx in range(7):
       net = block_inception_b(net)
 
     # 17 x 17 x 1024
@@ -194,13 +209,13 @@ def inception_v4_base(input):
 
     # 8 x 8 x 1536
     # 3 x Inception-C blocks
-    for idx in xrange(3):
+    for idx in range(3):
       net = block_inception_c(net)
 
     return net
 
 
-def inception_v4_model(img_rows, img_cols, color_type=1, num_classeses=None, dropout_keep_prob=0.2):
+def inception_v4_model(img_rows, img_cols, color_type=1, num_classes=None, dropout_keep_prob=0.2):
     '''
     Inception V4 Model for Keras
     Model Schema is based on
@@ -240,10 +255,10 @@ def inception_v4_model(img_rows, img_cols, color_type=1, num_classeses=None, dro
 
     if K.image_dim_ordering() == 'th':
       # Use pre-trained weights for Theano backend
-      weights_path = 'imagenet_models/inception-v4_weights_th_dim_ordering_th_kernels.h5'
+      weights_path = './imagenet_checkpoints/inception-v4_weights_th_dim_ordering_th_kernels.h5'
     else:
       # Use pre-trained weights for Tensorflow backend
-      weights_path = 'imagenet_models/inception-v4_weights_tf_dim_ordering_tf_kernels.h5'
+      weights_path = './imagenet_checkpoints/inception-v4_weights_tf_dim_ordering_tf_kernels.h5'
 
     model.load_weights(weights_path, by_name=True)
 
@@ -259,40 +274,78 @@ def inception_v4_model(img_rows, img_cols, color_type=1, num_classeses=None, dro
 
     return model
 
+
+def load_dataset(CONFIG):
+    dataset_path = CONFIG.dataset.original.path if CONFIG.dataset.parameters.dataset_in_use == 'original' else CONFIG.dataset.processed.path
+    h5_path = "{}/{}".format(dataset_path, CONFIG.dataset.folders.h5_folder)
+
+    hdf5_train_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.train_file)
+    hdf5_test_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_file)
+    hdf5_test_add_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_add_file)
+
+    h5f_train = h5py.File(hdf5_train_file, 'r')
+    h5f_test = h5py.File(hdf5_test_file, 'r')
+    h5f_test_add = h5py.File(hdf5_test_add_file, 'r')
+
+    X = h5f_train['X']
+    Y = h5f_train['Y']
+
+    test_X = h5f_test['X']
+
+    test_add_X = h5f_test['X']
+
+    test_X_final = np.concatenate((test_X, test_add_X), axis=0)
+
+    return {"train":{"X":np.array(X), "Y":np.array(Y, dtype=np.int)}, "test":{"X":test_X_final}}
+
+
+
 def main(argv):
+    # construct the argument parser and parse the arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config_file', help='Output file', required=True)
+    ARGS = parser.parse_args()
 
-    # Example to fine-tune on 3000 samples from Cifar10
+    CONFIG = load_configuration(ARGS.config_file)
 
-    img_rows, img_cols = 299, 299 # Resolution of inputs
-    channel = 3
-    num_classes = 10
-    batch_size = 16
-    nb_epoch = 10
+    dataset = load_dataset(CONFIG)
 
-    # Load Cifar10 data. Please implement your own load_data() module for your own dataset
-    X_train, Y_train, X_valid, Y_valid = load_cifar10_data(img_rows, img_cols)
+    print(dataset["train"]["Y"].shape)
 
-    # Load our model
-    model = inception_v4_model(img_rows, img_cols, channel, num_classes, dropout_keep_prob=0.2)
-    # Learning rate is changed to 0.001
+
+    # Get variables
+    img_rows = int(CONFIG.dataset.parameters.height)
+    img_cols = int(CONFIG.dataset.parameters.width)
+    channel = int(CONFIG.dataset.parameters.channels)
+    num_classes =  int(CONFIG.network.parameters.n_labels)
+    dropout_keep_prob = float(CONFIG.network.parameters.dropout_keep_prob)
+    batch_size = int(CONFIG.network.parameters.batch_size)
+    n_epoch = int(CONFIG.network.parameters.n_epoch)
+
+    # # Load Cifar10 data. Please implement your own load_data() module for your own dataset
+    # X_train, Y_train, X_valid, Y_valid = load_cifar10_data(img_rows, img_cols)
+
+    # # Load our model
+    model = inception_v4_model(img_rows, img_cols, channel, num_classes, dropout_keep_prob=dropout_keep_prob)
+    # # Learning rate is changed to 0.001
     sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
     model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
 
 
-    # Start Fine-tuning
-    model.fit(X_train, Y_train,
-              batch_size=batch_size,
-              nb_epoch=nb_epoch,
-              shuffle=True,
-              verbose=1,
-              validation_data=(X_valid, Y_valid),
+    # # Start Fine-tuning
+    model.fit(dataset["train"]["X"], dataset["train"]["Y"],
+                  batch_size=batch_size,
+                  nb_epoch=n_epoch,
+                  shuffle=True,
+                  verbose=1
               )
 
-    # Make predictions
-    predictions_valid = model.predict(X_valid, batch_size=batch_size, verbose=1)
+    # # Make predictions
+    # predictions_valid = model.predict(X_valid, batch_size=batch_size, verbose=1)
 
-    # Cross-entropy loss score
-    score = log_loss(Y_valid, predictions_valid)
+    # # Cross-entropy loss score
+    # score = log_loss(Y_valid, predictions_valid)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

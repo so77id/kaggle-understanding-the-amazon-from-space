@@ -1,8 +1,10 @@
 {
     "network":{
         "parameters":{
+            "n_labels":17,
             "batch_size":20,
-            "n_epoch":50
+            "n_epoch":50,
+            "dropout_keep_prob":0.2
         },
         "metadata":{
             "path":"./metadata"
@@ -16,11 +18,12 @@
             "path":"./datasets/processed"
         },
         "h5":{
-            "path":"./datasets/h5",
             "train_file": "train.h5",
-            "test_file": "test.h5"
+            "test_file": "test.h5",
+            "test_add_file": "test_add.h5"
         },
         "folders":{
+            "h5_folder":"h5",
             "list_folder":"lists",
             "train_folder":"train",
             "test_folder":"test",
