@@ -75,6 +75,9 @@ endif
 ##############################################################################
 ############################## CODE VARS #####################################
 ##############################################################################
+# MODEL CHECKPOINTS URLS
+INCEPTION_CHECKPOINT_URL=https://github.com/kentsommer/keras-inceptionV4/releases/download/2.0/inception-v4_weights_tf_dim_ordering_tf_kernels.h5
+
 #COMMANDS
 PYTHON_COMMAND=python3
 EXPORT_COMMAND=export
@@ -86,6 +89,7 @@ MV_COMMAND=mv
 
 MODELS_FOLDER=./models
 PREPROCESSING_FOLDER=./preprocessing
+IMAGENET_CHECKPOINTS_FOLDER=./imagenet_checkpoints
 
 TRAIN_INCEPTION_FILE=$(MODELS_FOLDER)/inception-v4.py
 
@@ -98,6 +102,11 @@ CREATE_H5_FILE=$(PREPROCESSING_FOLDER)/create_h5_files.py
 ##############################################################################
 ############################ CODE COMMANDS ###################################
 ##############################################################################
+setup s: excuda-devise
+	@$(WGET_COMMAND) https://github.com/kentsommer/keras-inceptionV4/releases/download/2.0/inception-v4_weights_tf_dim_ordering_tf_kernels.h5
+	@$(MV_COMMAND) inception-v4_weights_tf_dim_ordering_tf_kernels.h5 $(IMAGENET_CHECKPOINTS_FOLDER)
+
+
 train-inception t: excuda-devise
 	@echo "[Train] Trainning..."
 	@$(PYTHON_COMMAND) $(TRAIN_INCEPTION_FILE) -c $(CONFIG_FILE)
