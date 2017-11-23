@@ -4,7 +4,7 @@ import time
 
 def get_metadata_paths(CONFIG, ARGS):
     print("Creating experiment enviroment")
-    metadata_path = "{}/{}".format(CONFIG.network.metadata.path, time.strftime("%d-%m-%Y"))
+    metadata_path = "{}/{}/{}".format(CONFIG.network.metadata.path, CONFIG.network.parameters.model_name, time.strftime("%d-%m-%Y"))
 
     n_experiment = "1"
     if os.path.exists(metadata_path):
