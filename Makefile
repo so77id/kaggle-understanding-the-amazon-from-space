@@ -133,6 +133,9 @@ run-train rt: docker-print
 run-dataset rd: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make dataset CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
+run-tensorboard rtb: docker-print
+	@$(DOCKER_RUN_PORT_COMMAND)  bash -c "make tensorboard IMAGE_METADATA_PATH=$(IMAGE_METADATA_PATH)"; \
+	status=$$?
 
 run-test rte: docker-print
 	@$(DOCKER_RUN_COMMAND) bash;
