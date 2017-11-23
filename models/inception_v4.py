@@ -1,29 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from keras.models import Sequential
-from keras.optimizers import RMSprop
+# from keras.models import Sequential
 from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, Dropout, Flatten, merge, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras import backend as K
 
-from sklearn.metrics import log_loss
+# from sklearn.metrics import log_loss
 
 import numpy as np
-
-import h5py
-import argparse
-import sys
-import os
-import json
-
-from collections import namedtuple
-
-def load_configuration(configuration_file):
-    with open(configuration_file, 'r') as content_file:
-        content = content_file.read()
-
-    return json.loads(content, object_hook=lambda d: namedtuple('Configuration', d.keys())(*d.values()))
 
 
 def conv2d_bn(x, nb_filter, nb_row, nb_col,
@@ -273,100 +258,3 @@ def inception_v4_model(img_rows, img_cols, color_type=1, num_classes=None, dropo
     model = Model(inputs, predictions_ft, name='inception_v4')
 
     return model
-
-
-def load_dataset(CONFIG):
-    dataset_path = CONFIG.dataset.original.path if CONFIG.dataset.parameters.dataset_in_use == 'original' else CONFIG.dataset.processed.path
-    h5_path = "{}/{}".format(dataset_path, CONFIG.dataset.folders.h5_folder)
-
-    hdf5_train_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.train_file)
-    hdf5_test_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_file)
-    hdf5_test_add_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_add_file)
-
-    h5f_train = h5py.File(hdf5_train_file, 'r')
-    h5f_test = h5py.File(hdf5_test_file, 'r')
-    h5f_test_add = h5py.File(hdf5_test_add_file, 'r')
-
-    X = h5f_train['X']
-    Y = h5f_train['Y']
-
-    test_X = h5f_test['X']
-
-    test_add_X = h5f_test['X']
-
-    test_X_final = np.concatenate((test_X, test_add_X), axis=0)
-
-    return {"train":{"X":np.array(X), "Y":np.array(Y, dtype=np.int)}, "test":{"X":test_X_final}}
-
-#http://arseny.info/2017/f-beta-score-for-keras.html
-def fbeta(y_true, y_pred, threshold_shift=0):
-    beta = 2
-
-    # just in case of hipster activation at the final layer
-    y_pred = K.clip(y_pred, 0, 1)
-
-    # shifting the prediction threshold from .5 if needed
-    y_pred_bin = K.round(y_pred + threshold_shift)
-
-    tp = K.sum(K.round(y_true * y_pred_bin)) + K.epsilon()
-    fp = K.sum(K.round(K.clip(y_pred_bin - y_true, 0, 1)))
-    fn = K.sum(K.round(K.clip(y_true - y_pred, 0, 1)))
-
-    precision = tp / (tp + fp)
-    recall = tp / (tp + fn)
-
-    beta_squared = beta ** 2
-    return (beta_squared + 1) * (precision * recall) / (beta_squared * precision + recall)
-
-def main(argv):
-    # construct the argument parser and parse the arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config_file', help='Output file', required=True)
-    ARGS = parser.parse_args()
-
-    CONFIG = load_configuration(ARGS.config_file)
-
-    dataset = load_dataset(CONFIG)
-
-    print(dataset["train"]["Y"].shape)
-
-
-    # Get variables
-    img_rows = int(CONFIG.dataset.parameters.height)
-    img_cols = int(CONFIG.dataset.parameters.width)
-    channel = int(CONFIG.dataset.parameters.channels)
-    num_classes =  int(CONFIG.network.parameters.n_labels)
-    dropout_keep_prob = float(CONFIG.network.parameters.dropout_keep_prob)
-    batch_size = int(CONFIG.network.parameters.batch_size)
-    n_epoch = int(CONFIG.network.parameters.n_epoch)
-
-    # # Load Cifar10 data. Please implement your own load_data() module for your own dataset
-    # X_train, Y_train, X_valid, Y_valid = load_cifar10_data(img_rows, img_cols)
-
-    # # Load our model
-    model = inception_v4_model(img_rows, img_cols, channel, num_classes, dropout_keep_prob=dropout_keep_prob)
-    # # Learning rate is changed to 0.001
-    rmsprop = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
-    # sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True)
-    model.compile(optimizer=rmsprop, loss='binary_crossentropy', metrics=[fbeta])
-
-
-    # # Start Fine-tuning
-    model.fit(dataset["train"]["X"], dataset["train"]["Y"],
-                  batch_size=batch_size,
-                  nb_epoch=n_epoch,
-                  shuffle=True,
-                  verbose=1
-              )
-
-    # Make predictions
-    predictions_valid = model.predict(dataset["test"]["X"], batch_size=batch_size, verbose=1)
-
-    print(predictions_valid)
-
-    # # Cross-entropy loss score
-    # score = log_loss(Y_valid, predictions_valid)
-
-
-if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))

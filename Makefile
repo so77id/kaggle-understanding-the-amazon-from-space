@@ -88,12 +88,10 @@ MV_COMMAND=mv
 MKDIR_COMMAND=mkdir
 
 
-MODELS_FOLDER=./models
 PREPROCESSING_FOLDER=./preprocessing
 IMAGENET_CHECKPOINTS_FOLDER=./imagenet_checkpoints
 
-TRAIN_INCEPTION_FILE=$(MODELS_FOLDER)/inception-v4.py
-
+TRAIN=train.py
 
 CREATE_H5_FILE=$(PREPROCESSING_FOLDER)/create_h5_files.py
 
@@ -109,9 +107,9 @@ setup s: excuda-devise
 	@$(MV_COMMAND) inception-v4_weights_tf_dim_ordering_tf_kernels.h5 $(IMAGENET_CHECKPOINTS_FOLDER)
 
 
-train-inception t: excuda-devise
+train t: excuda-devise
 	@echo "[Train] Trainning..."
-	@$(PYTHON_COMMAND) $(TRAIN_INCEPTION_FILE) -c $(CONFIG_FILE)
+	@$(PYTHON_COMMAND) $(TRAIN) -c $(CONFIG_FILE)
 
 
 dataset d: excuda-devise
@@ -129,8 +127,8 @@ endif
 ##############################################################################
 ########################### DOCKER COMMANDS ##################################
 ##############################################################################
-run-inception rt: docker-print
-	@$(DOCKER_RUN_COMMAND) bash -c "make train-inception CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
+run-train rt: docker-print
+	@$(DOCKER_RUN_COMMAND) bash -c "make train CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
 run-dataset rd: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make dataset CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";

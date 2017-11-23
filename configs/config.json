@@ -4,7 +4,16 @@
             "n_labels":17,
             "batch_size":20,
             "n_epoch":5,
-            "dropout_keep_prob":0.2
+            "dropout_keep_prob":0.2,
+            "model_name":"inception_v4",
+            "loss_function":"binary_crossentropy",
+            "optimizer":{
+                "name":"rmsprop",
+                "lr":0.001,
+                "rho":0.9,
+                "epsilon":1e-08,
+                "decay":0.0
+            }
         },
         "metadata":{
             "path":"./metadata"

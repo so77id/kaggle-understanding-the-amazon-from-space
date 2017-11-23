@@ -102,3 +102,7 @@ ENV/
 
 datasets
 imagenet_checkpoints
+
+__pycache__/
+
+metadata
