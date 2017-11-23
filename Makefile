@@ -116,6 +116,10 @@ dataset d: excuda-devise
 	@echo "[preprocessing] preprocessing dataset..."
 	@$(PYTHON_COMMAND) $(CREATE_H5_FILE) -c $(CONFIG_FILE)
 
+tensorboard tb:
+	@echo "[Tensorboard] Running Tensorboard"
+	@$(TENSORBOARD_COMMAND) --logdir=$(IMAGE_METADATA_PATH) --host 0.0.0.0
+
 excuda-devise ecd:
 ifeq ($(GPU), true)
 	@echo "\t Using CUDA_VISIBLE_DEVICES: "$(CUDA_VISIBLE_DEVICES)
