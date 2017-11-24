@@ -27,9 +27,9 @@
             "path":"./datasets/processed"
         },
         "h5":{
-            "train_file": "train.h5",
-            "test_file": "test.h5",
-            "test_add_file": "test_add.h5"
+            "train_pattern": "train",
+            "test_pattern": "test",
+            "test_add_pattern": "test_add"
         },
         "folders":{
             "h5_folder":"h5",
@@ -44,8 +44,8 @@
             "test_add":"test_add.list"
         },
         "parameters":{
-            "width":299,
-            "height":299,
+            "width":224,
+            "height":224,
             "channels":3,
             "dataset_in_use":"original"
         }

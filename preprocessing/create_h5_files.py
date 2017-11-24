@@ -51,7 +51,7 @@ def main(argv):
     if not os.path.exists(h5_path):
         os.makedirs(h5_path, exist_ok=True)
 
-    hdf5_train_file, hdf5_test_file, hdf5_test_add_file = get_h5_filenames(h5_path, CONFIG.dataset.h5, CONFIG.dataset.parameters.width, extension=".h5")
+    hdf5_train_file, hdf5_test_file, hdf5_test_add_file = get_h5_filenames(h5_path, CONFIG.dataset.h5, CONFIG.dataset.parameters.width, extension="h5")
 
     # Get varaibles
     width = CONFIG.dataset.parameters.width
