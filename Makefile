@@ -83,6 +83,8 @@ RESNET_50_CHECKPOINT_URL=https://github.com/fchollet/deep-learning-models/releas
 RESNET_50_CHECKPOINT_FILENAME=resnet50_weights_tf_dim_ordering_tf_kernels.h5
 
 
+DENSENET_121_CHECKPOINT_URL=http://www.recod.ic.unicamp.br/\~mrodriguez/densenet121_weights_tf.h5
+DENSENET_121_CHECKPOINT_FILENAME=densenet121_weights_tf.h5
 #COMMANDS
 PYTHON_COMMAND=python3
 EXPORT_COMMAND=export
@@ -113,6 +115,9 @@ setup s: excuda-devise
 
 	@$(WGET_COMMAND) $(RESNET_50_CHECKPOINT_URL)
 	@$(MV_COMMAND) $(RESNET_50_CHECKPOINT_FILENAME) $(IMAGENET_CHECKPOINTS_FOLDER)
+
+	@$(WGET_COMMAND) $(DENSENET_121_CHECKPOINT_URL)
+	@$(MV_COMMAND) $(DENSENET_121_CHECKPOINT_FILENAME) $(IMAGENET_CHECKPOINTS_FOLDER)
 
 
 train t: excuda-devise

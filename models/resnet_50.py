@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from keras.models import Sequential
-from keras.optimizers import SGD
-from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Dropout, Flatten, merge, Reshape, Activation
+from keras.layers import Input, Dense, Convolution2D, MaxPooling2D, AveragePooling2D, ZeroPadding2D, Flatten, merge, Activation
 from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras import backend as K
@@ -143,7 +141,7 @@ def resnet50_model(img_rows, img_cols, color_type=1, num_classes=None):
     model.load_weights(weights_path)
 
     # Truncate and replace softmax layer for transfer learning
-    # Cannot use model.layers.pop() since model is not of Sequential() type
+    # Cannot use model.layers.pop() since model is not of
     # The method below works since pre-trained weights are stored in layers but not in the model
     x_newfc = AveragePooling2D((7, 7), name='avg_pool')(x)
     x_newfc = Flatten()(x_newfc)
