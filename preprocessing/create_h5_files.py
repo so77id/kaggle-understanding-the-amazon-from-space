@@ -15,6 +15,14 @@ from keras.utils import np_utils
 
 from sklearn import preprocessing
 
+def get_h5_filenames(h5_path, h5_CONFIG, img_size, extension=".h5"):
+    hdf5_train_file = "{}/{}-{}.{}".format(h5_path, h5_CONFIG.train_pattern, img_size, extension)
+    hdf5_test_file = "{}/{}-{}.{}".format(h5_path, h5_CONFIG.test_pattern, img_size, extension)
+    hdf5_test_add_file = "{}/{}-{}.{}".format(h5_path, h5_CONFIG.test_add_pattern, img_size, extension)
+
+    return hdf5_train_file, hdf5_test_file, hdf5_test_add_file
+
+
 def load_configuration(configuration_file):
     with open(configuration_file, 'r') as content_file:
         content = content_file.read()
@@ -42,6 +50,8 @@ def main(argv):
     print(h5_path)
     if not os.path.exists(h5_path):
         os.makedirs(h5_path, exist_ok=True)
+
+    hdf5_train_file, hdf5_test_file, hdf5_test_add_file = get_h5_filenames(h5_path, CONFIG.dataset.h5, CONFIG.dataset.parameters.width, extension=".h5")
 
     # Get varaibles
     width = CONFIG.dataset.parameters.width
@@ -78,7 +88,7 @@ def main(argv):
         train_categorical_labels.append(categorical_labels)
 
     # creating h5 files
-    hdf5_train_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.train_file)
+    # hdf5_train_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.train_file)
 
     h5f_t = h5py.File(hdf5_train_file, 'w')
 
@@ -110,7 +120,7 @@ def main(argv):
             test_filename_lists.append(filename)
 
     # creating h5 files
-    hdf5_test_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_file)
+    # hdf5_test_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_file)
 
     h5f_t = h5py.File(hdf5_test_file, 'w')
 
@@ -141,7 +151,7 @@ def main(argv):
             test_add_filename_lists.append(filename)
 
     # creating h5 files
-    hdf5_test_add_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_add_file)
+    # hdf5_test_add_file = "{}/{}".format(h5_path, CONFIG.dataset.h5.test_add_file)
 
     h5f_t = h5py.File(hdf5_test_add_file, 'w')
 
