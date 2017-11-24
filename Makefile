@@ -77,6 +77,11 @@ endif
 ##############################################################################
 # MODEL CHECKPOINTS URLS
 INCEPTION_CHECKPOINT_URL=https://github.com/kentsommer/keras-inceptionV4/releases/download/2.0/inception-v4_weights_tf_dim_ordering_tf_kernels.h5
+INCEPTION_CHECKPOINT_FILENAME=inception-v4_weights_tf_dim_ordering_tf_kernels.h5
+
+RESNET_50_CHECKPOINT_URL=https://github.com/fchollet/deep-learning-models/releases/download/v0.2/resnet50_weights_tf_dim_ordering_tf_kernels.h5
+RESNET_50_CHECKPOINT_FILENAME=resnet50_weights_tf_dim_ordering_tf_kernels.h5
+
 
 #COMMANDS
 PYTHON_COMMAND=python3
@@ -102,9 +107,12 @@ CREATE_H5_FILE=$(PREPROCESSING_FOLDER)/create_h5_files.py
 ############################ CODE COMMANDS ###################################
 ##############################################################################
 setup s: excuda-devise
-	@$(MKDIR_COMMAND) $(IMAGENET_CHECKPOINTS_FOLDER)
-	@$(WGET_COMMAND) https://github.com/kentsommer/keras-inceptionV4/releases/download/2.0/inception-v4_weights_tf_dim_ordering_tf_kernels.h5
-	@$(MV_COMMAND) inception-v4_weights_tf_dim_ordering_tf_kernels.h5 $(IMAGENET_CHECKPOINTS_FOLDER)
+	@$(MKDIR_COMMAND) -p $(IMAGENET_CHECKPOINTS_FOLDER)
+	@$(WGET_COMMAND) $(INCEPTION_CHECKPOINT_URL)
+	@$(MV_COMMAND) $(INCEPTION_CHECKPOINT_FILENAME) $(IMAGENET_CHECKPOINTS_FOLDER)
+
+	@$(WGET_COMMAND) $(RESNET_50_CHECKPOINT_URL)
+	@$(MV_COMMAND) $(RESNET_50_CHECKPOINT_FILENAME) $(IMAGENET_CHECKPOINTS_FOLDER)
 
 
 train t: excuda-devise

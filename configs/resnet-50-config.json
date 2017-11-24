@@ -1,0 +1,53 @@
+{
+    "network":{
+        "parameters":{
+            "n_labels":17,
+            "batch_size":20,
+            "n_epoch":5,
+            "dropout_keep_prob":0.2,
+            "model_name":"resnet_50",
+            "loss_function":"binary_crossentropy",
+            "optimizer":{
+                "name":"rmsprop",
+                "lr":0.001,
+                "rho":0.9,
+                "epsilon":1e-08,
+                "decay":0.0
+            }
+        },
+        "metadata":{
+            "path":"./metadata"
+        }
+    },
+    "dataset":{
+        "original":{
+            "path":"./datasets/original"
+        },
+        "processed":{
+            "path":"./datasets/processed"
+        },
+        "h5":{
+            "train_file": "train.h5",
+            "test_file": "test.h5",
+            "test_add_file": "test_add.h5"
+        },
+        "folders":{
+            "h5_folder":"h5",
+            "list_folder":"lists",
+            "train_folder":"train",
+            "test_folder":"test",
+            "test_add_folder":"test_add"
+        },
+        "lists":{
+            "train":"train.list",
+            "test":"test.list",
+            "test_add":"test_add.list"
+        },
+        "parameters":{
+            "width":299,
+            "height":299,
+            "channels":3,
+            "dataset_in_use":"original"
+        }
+    }
+}
