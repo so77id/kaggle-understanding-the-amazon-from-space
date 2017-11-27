@@ -2,8 +2,8 @@
     "network":{
         "parameters":{
             "n_labels":17,
-            "batch_size":20,
-            "n_epoch":5,
+            "batch_size":40,
+            "n_epoch":30,
             "dropout_keep_prob":0.2,
             "model_name":"resnet_50",
             "loss_function":"binary_crossentropy",

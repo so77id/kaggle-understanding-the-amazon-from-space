@@ -1,9 +1,16 @@
 {
+    "prediction":{
+        "threshold":0.30,
+        "class_encoded_path":"class_encoded.csv",
+        "checkpoint":"./imagenet_checkpoints/model-inception-v4.h5",
+        "predict_file":"predict.csv"
+
+    },
     "network":{
         "parameters":{
             "n_labels":17,
-            "batch_size":20,
-            "n_epoch":5,
+            "batch_size":40,
+            "n_epoch":30,
             "dropout_keep_prob":0.2,
             "model_name":"inception_v4",
             "loss_function":"binary_crossentropy",

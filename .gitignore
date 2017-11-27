@@ -106,3 +106,6 @@ imagenet_checkpoints
 __pycache__/
 
 metadata
+
+*.txt
+*.csv

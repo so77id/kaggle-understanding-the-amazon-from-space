@@ -1,23 +1,17 @@
 import h5py
-import argparse
 import sys
 import os
-import json
+import argparse
 
-from collections import namedtuple
 from utils.scores import fbeta
 from utils.dataset import load_dataset
 from utils.metadata import get_metadata_paths
-from models.factory import model_factory
 from utils.optimizers import optimizer_factory
+from utils.configuration import load_configuration
+
+from models.factory import model_factory
 
 from keras.callbacks import TensorBoard
-
-def load_configuration(configuration_file):
-    with open(configuration_file, 'r') as content_file:
-        content = content_file.read()
-
-    return json.loads(content, object_hook=lambda d: namedtuple('Configuration', d.keys())(*d.values()))
 
 
 def main(argv):

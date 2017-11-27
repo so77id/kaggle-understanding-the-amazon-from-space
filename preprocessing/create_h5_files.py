@@ -81,6 +81,12 @@ def main(argv):
     encoder.fit(list_labels)
     n_labels = encoder.classes_.shape[0]
 
+    labels = encoder.classes_
+    class_enconded_file = CONFIG.prediction.class_encoded_path
+    with open(class_enconded_file, "w") as writer:
+        for label in labels:
+            writer.write(label + ",")
+
     train_categorical_labels = []
     for label_per_file in train_labels_lists:
         encoded_labels = encoder.transform(label_per_file)
@@ -131,6 +137,8 @@ def main(argv):
         img = cv2.resize(img, (width, height))
 
         img_list.append(img)
+
+    img_list = np.array(img_list)
 
     h5f_t.create_dataset('X', data=img_list)
 

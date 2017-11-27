@@ -99,6 +99,7 @@ PREPROCESSING_FOLDER=./preprocessing
 IMAGENET_CHECKPOINTS_FOLDER=./imagenet_checkpoints
 
 TRAIN=train.py
+PREDICT=predict.py
 
 CREATE_H5_FILE=$(PREPROCESSING_FOLDER)/create_h5_files.py
 
@@ -124,6 +125,10 @@ train t: excuda-devise
 	@echo "[Train] Trainning..."
 	@$(PYTHON_COMMAND) $(TRAIN) -c $(CONFIG_FILE)
 
+predict p: excuda-devise
+	@echo "[Predict] Predicting test dataset..."
+	@$(PYTHON_COMMAND) $(PREDICT) -c $(CONFIG_FILE)
+
 
 dataset d: excuda-devise
 	@echo "[preprocessing] preprocessing dataset..."
@@ -146,6 +151,9 @@ endif
 ##############################################################################
 run-train rt: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make train CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
+
+run-predict rp: docker-print
+	@$(DOCKER_RUN_COMMAND) bash -c "make predict CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
 run-dataset rd: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make dataset CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";

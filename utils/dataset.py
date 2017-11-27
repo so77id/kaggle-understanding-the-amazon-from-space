@@ -32,7 +32,7 @@ def load_dataset(CONFIG, train=True):
 
         test_X = h5f_test['X']
 
-        test_add_X = h5f_test['X']
+        test_add_X = h5f_test_add['X']
 
         dataset = {"test":{"X":test_X, "X_add":test_add_X}}
 
