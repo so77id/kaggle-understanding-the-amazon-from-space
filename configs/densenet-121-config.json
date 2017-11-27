@@ -1,4 +1,11 @@
 {
+    "prediction":{
+        "threshold":0.30,
+        "class_encoded_path":"class_encoded.csv",
+        "checkpoint":"./imagenet_checkpoints/model-inception-v4.h5",
+        "predict_file":"predict.csv"
+
+    },
     "network":{
         "parameters":{
             "n_labels":17,
