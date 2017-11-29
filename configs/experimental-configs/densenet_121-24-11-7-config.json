@@ -1,0 +1,60 @@
+{
+    "prediction":{
+        "threshold":0.20,
+        "class_encoded_path":"class_encoded.csv",
+        "checkpoint":"./metadata/densenet_121/24-11-2017/7/checkpoints/model.h5",
+        "predict_file":"./experiments/densenet_121-24-11-7-predict.csv",
+        "prob_file":"./experiments/densenet_121-24-11-7-probabilities.csv"
+    },
+    "network":{
+        "parameters":{
+            "n_labels":17,
+            "batch_size":40,
+            "n_epoch":30,
+            "dropout_keep_prob":0.2,
+            "model_name":"densenet_121",
+            "loss_function":"binary_crossentropy",
+            "optimizer":{
+                "name":"rmsprop",
+                "lr":0.001,
+                "rho":0.9,
+                "epsilon":1e-08,
+                "decay":0.0
+            }
+        },
+        "metadata":{
+            "path":"./metadata"
+        }
+    },
+    "dataset":{
+        "original":{
+            "path":"./datasets/original"
+        },
+        "processed":{
+            "path":"./datasets/processed"
+        },
+        "h5":{
+            "train_pattern": "train",
+            "test_pattern": "test",
+            "test_add_pattern": "test_add"
+        },
+        "folders":{
+            "h5_folder":"h5",
+            "list_folder":"lists",
+            "train_folder":"train",
+            "test_folder":"test",
+            "test_add_folder":"test_add"
+        },
+        "lists":{
+            "train":"train.list",
+            "test":"test.list",
+            "test_add":"test_add.list"
+        },
+        "parameters":{
+            "width":224,
+            "height":224,
+            "channels":3,
+            "dataset_in_use":"original"
+        }
+    }
+}

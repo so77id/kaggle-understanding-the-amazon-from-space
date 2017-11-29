@@ -49,59 +49,80 @@ def main(argv):
 
     with open("{}/{}".format(lists_path, CONFIG.dataset.lists.test), 'r') as lines:
         for l in lines:
-            test_filenames.append(l.split('\n')[0])
+            test_filenames.append(l.split('.')[0])
     test_filenames = np.array(test_filenames)
 
     test_add_filenames = []
     with open("{}/{}".format(lists_path, CONFIG.dataset.lists.test_add), 'r') as lines:
         for l in lines:
-            test_add_filenames.append(l.split('\n')[0])
+            test_add_filenames.append(l.split('.')[0])
     test_add_filenames = np.array(test_add_filenames)
-
-
 
     # Load model
     model = model_factory(model_name, img_rows, img_cols, channel, num_classes, dropout_keep_prob, checkpoint=CONFIG.prediction.checkpoint)
 
-
-
-    # Get test labels
-    print("Test Shape:", dataset["test"]["X"].shape)
-    print("Test add Shape:", dataset["test"]["X_add"].shape)
-
     test_Y = model.predict(dataset["test"]["X"])
-    test_Y = np.where(test_Y>=label_treshold, 1, 0)
+    test_Y_ = np.where(test_Y>=label_treshold, 1, 0)
 
     # Get test_add labels
     test_add_Y = model.predict(dataset["test"]["X_add"])
-    test_add_Y = np.where(test_add_Y>=label_treshold, 1, 0)
+    test_add_Y_ = np.where(test_add_Y>=label_treshold, 1, 0)
 
-    with open(CONFIG.prediction.predict_file, 'w') as writer:
-        j = 0
-        for name, label in zip(test_filenames, test_Y):
+    # Writing prediction file
+    with open(CONFIG.prediction.predict_file, 'w') as writer, open(CONFIG.prediction.prob_file, 'w') as prob_writer:
+        writer.write("image_name,tags\n")
+        for name, label, label_dec in zip(test_filenames, test_Y_, test_Y):
+            # Write name
             writer.write("{},".format(name))
+            prob_writer.write("{},".format(name))
+
+            if label.sum() < 1:
+                print(name, labels[np.where(label_dec > 0.1)])
+
+            # Write label names
             file_labels = labels[np.where(label==1)]
-            j =+ 1
             for i in range(file_labels.shape[0]):
                 if file_labels.shape[0] - 1 == i:
-                    writer.write(file_labels[i] + "\n")
+                    writer.write(file_labels[i])
+                else:
+                    writer.write(file_labels[i] + " ")
+            # write label probabilities
+            for i in range(label_dec.shape[0]):
+                if label_dec.shape[0] - 1 == i:
+                    prob_writer.write(str(label_dec[i]))
+                else:
+                    prob_writer.write(str(label_dec[i]) + " ")
+
+
+            writer.write("\n")
+            prob_writer.write("\n")
+
+        for name, label, label_dec in zip(test_add_filenames, test_add_Y_, test_add_Y):
+            # Write name
+            writer.write("{},".format(name))
+            prob_writer.write("{},".format(name))
+
+            if label.sum() < 1:
+                print(name, labels[np.where(label_dec > 0.1)])
+
+            # Write label names
+            file_labels = labels[np.where(label==1)]
+            for i in range(file_labels.shape[0]):
+                if file_labels.shape[0] - 1 == i:
+                    writer.write(file_labels[i])
                 else:
                     writer.write(file_labels[i] + " ")
 
-        k = 0
-        for name, label in zip(test_add_filenames, test_add_Y):
-            writer.write("{},".format(name))
-            file_labels = labels[np.where(label==1)]
-            k += 1
-            for i in range(file_labels.shape[0]):
-                if file_labels.shape[0] - 1 == i:
-                    writer.write(file_labels[i] + "\n")
+            # write label probabilities
+            for i in range(label_dec.shape[0]):
+                if label_dec.shape[0] - 1 == i:
+                    prob_writer.write(str(label_dec[i]))
                 else:
-                    writer.write(file_labels[i] + " ")
+                    prob_writer.write(str(label_dec[i]) + " ")
 
+            writer.write("\n")
+            prob_writer.write("\n")
 
-    print("test count:", j)
-    print("test add count:", k)
 
     # print(test_Y)
 

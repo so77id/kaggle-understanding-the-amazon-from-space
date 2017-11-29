@@ -130,7 +130,7 @@ predict p: excuda-devise
 	@echo "[Predict] Predicting test dataset..."
 	@$(PYTHON_COMMAND) $(PREDICT) -c $(CONFIG_FILE)
 
-ensemble p: excuda-devise
+ensemble pe: excuda-devise
 	@echo "[Predict] Predicting using ensemble test dataset..."
 	@$(PYTHON_COMMAND) $(ENSEMBLE) -c $(CONFIG_FILE)
 
@@ -160,7 +160,7 @@ run-train rt: docker-print
 run-predict rp: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make predict CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
-run-ensemble rp: docker-print
+run-ensemble rep: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make ensemble CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
 run-dataset rd: docker-print
