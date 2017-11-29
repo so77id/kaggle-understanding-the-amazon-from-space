@@ -15,7 +15,7 @@ GPU_DOCKER_IMAGE=tensorflow-opencv-py3
 # enable/disable GPU usage
 GPU=false
 # Config file used to experiment
-CONFIG_FILE="configs/config.json"
+CONFIG_FILE="configs/ensemble-config.json"
 # List of cuda devises
 CUDA_VISIBLE_DEVICES=0
 # Name of dataset to process
@@ -100,6 +100,7 @@ IMAGENET_CHECKPOINTS_FOLDER=./imagenet_checkpoints
 
 TRAIN=train.py
 PREDICT=predict.py
+ENSEMBLE=predict_ensemble.py
 
 CREATE_H5_FILE=$(PREPROCESSING_FOLDER)/create_h5_files.py
 
@@ -129,6 +130,10 @@ predict p: excuda-devise
 	@echo "[Predict] Predicting test dataset..."
 	@$(PYTHON_COMMAND) $(PREDICT) -c $(CONFIG_FILE)
 
+ensemble p: excuda-devise
+	@echo "[Predict] Predicting using ensemble test dataset..."
+	@$(PYTHON_COMMAND) $(ENSEMBLE) -c $(CONFIG_FILE)
+
 
 dataset d: excuda-devise
 	@echo "[preprocessing] preprocessing dataset..."
@@ -154,6 +159,9 @@ run-train rt: docker-print
 
 run-predict rp: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make predict CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
+
+run-ensemble rp: docker-print
+	@$(DOCKER_RUN_COMMAND) bash -c "make ensemble CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
 run-dataset rd: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make dataset CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";

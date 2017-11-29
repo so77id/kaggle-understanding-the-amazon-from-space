@@ -1,0 +1,66 @@
+{
+    "prediction":{
+        "threshold":0.2,
+        "class_encoded_path":"class_encoded.csv",
+        "checkpoint_1":"./imagenet_checkpoints/model-densenet-121.h5",
+        "checkpoint_2":"./imagenet_checkpoints/model-inception-v4.h5",
+        "checkpoint_3":"./imagenet_checkpoints/model-resnet-50.h5",
+        "predict_file":"predict.csv"
+
+    },
+    "network":{
+        "parameters":{
+            "n_labels":17,
+            "batch_size":40,
+            "n_epoch":30,
+            "dropout_keep_prob":0.2,
+            "model_name_1":"densenet_121",
+            "model_name_2":"inception_v4",
+            "model_name_3":"resnet_50",
+            "loss_function":"binary_crossentropy",
+            "optimizer":{
+                "name":"rmsprop",
+                "lr":0.001,
+                "rho":0.9,
+                "epsilon":1e-08,
+                "decay":0.0
+            }
+        },
+        "metadata":{
+            "path":"./metadata"
+        }
+    },
+    "dataset":{
+        "original":{
+            "path":"./datasets/original"
+        },
+        "processed":{
+            "path":"./datasets/processed"
+        },
+        "h5":{
+            "train_pattern": "train",
+            "test_pattern": "test",
+            "test_add_pattern": "test_add"
+        },
+        "folders":{
+            "h5_folder":"h5",
+            "list_folder":"lists",
+            "train_folder":"train",
+            "test_folder":"test",
+            "test_add_folder":"test_add"
+        },
+        "lists":{
+            "train":"train.list",
+            "test":"test.list",
+            "test_add":"test_add.list"
+        },
+        "parameters":{
+            "width_densenet":224,
+            "height_densenet":224,
+            "width":299,
+            "height":299,
+            "channels":3,
+            "dataset_in_use":"original"
+        }
+    }
+}
