@@ -20,7 +20,8 @@
                 "rho":0.9,
                 "epsilon":1e-08,
                 "decay":0.0
-            }
+            },
+            "checkpoint":"./metadata/inception_v4/23-11-2017/7/checkpoints/model.h5"
         },
         "metadata":{
             "path":"./metadata"
