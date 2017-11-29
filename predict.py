@@ -58,50 +58,48 @@ def main(argv):
             test_add_filenames.append(l.split('\n')[0])
     test_add_filenames = np.array(test_add_filenames)
 
-
-
     # Load model
     model = model_factory(model_name, img_rows, img_cols, channel, num_classes, dropout_keep_prob, checkpoint=CONFIG.prediction.checkpoint)
 
-
-
-    # Get test labels
-    print("Test Shape:", dataset["test"]["X"].shape)
-    print("Test add Shape:", dataset["test"]["X_add"].shape)
-
+    print("shape test x:", dataset["test"]["X"].shape)
     test_Y = model.predict(dataset["test"]["X"])
-    test_Y = np.where(test_Y>=label_treshold, 1, 0)
+
+    print("shape predict test x:", test_Y.shape)
+    test_Y_ = np.where(test_Y>=label_treshold, 1, 0)
 
     # Get test_add labels
+    print("shape test X_add:", dataset["test"]["X_add"].shape)
     test_add_Y = model.predict(dataset["test"]["X_add"])
-    test_add_Y = np.where(test_add_Y>=label_treshold, 1, 0)
+    print("shape predict test x_add:", test_add_Y.shape)
+    # print(test_add_Y)
+    test_add_Y_ = np.where(test_add_Y>=label_treshold, 1, 0)
 
+    # Writing prediction file
     with open(CONFIG.prediction.predict_file, 'w') as writer:
-        j = 0
-        for name, label in zip(test_filenames, test_Y):
+        for name, label, label_dec in zip(test_filenames, test_Y_, test_Y):
             writer.write("{},".format(name))
+            if label.sum() < 1:
+                print(name, labels[np.where(label_dec > 0.1)])
             file_labels = labels[np.where(label==1)]
-            j =+ 1
             for i in range(file_labels.shape[0]):
                 if file_labels.shape[0] - 1 == i:
-                    writer.write(file_labels[i] + "\n")
+                    writer.write(file_labels[i])
                 else:
                     writer.write(file_labels[i] + " ")
+            writer.write("\n")
 
-        k = 0
-        for name, label in zip(test_add_filenames, test_add_Y):
+        for name, label, label_dec in zip(test_add_filenames, test_add_Y_, test_add_Y):
             writer.write("{},".format(name))
+            if label.sum() < 1:
+                print(name, labels[np.where(label_dec > 0.1)])
             file_labels = labels[np.where(label==1)]
-            k += 1
             for i in range(file_labels.shape[0]):
                 if file_labels.shape[0] - 1 == i:
-                    writer.write(file_labels[i] + "\n")
+                    writer.write(file_labels[i])
                 else:
                     writer.write(file_labels[i] + " ")
+            writer.write("\n")
 
-
-    print("test count:", j)
-    print("test add count:", k)
 
     # print(test_Y)
 
