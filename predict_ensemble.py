@@ -32,6 +32,8 @@ def main(argv):
     model_name_3 = CONFIG.network.parameters.model_name_3
     img_rows = int(CONFIG.dataset.parameters.height)
     img_cols = int(CONFIG.dataset.parameters.width)
+    img_rows_dense = int(CONFIG.dataset.parameters.height_densenet)
+    img_cols_dense = int(CONFIG.dataset.parameters.width_densenet)
     channel = int(CONFIG.dataset.parameters.channels)
     num_classes =  int(CONFIG.network.parameters.n_labels)
     dropout_keep_prob = float(CONFIG.network.parameters.dropout_keep_prob)
@@ -62,7 +64,7 @@ def main(argv):
 
 
     # Load model
-    model_1 = model_factory(model_name_1, img_rows, img_cols, channel, num_classes, dropout_keep_prob, checkpoint=CONFIG.prediction.checkpoint_1)
+    model_1 = model_factory(model_name_1, img_rows_dense, img_cols_dense, channel, num_classes, dropout_keep_prob, checkpoint=CONFIG.prediction.checkpoint_1)
     model_2 = model_factory(model_name_2, img_rows, img_cols, channel, num_classes, dropout_keep_prob, checkpoint=CONFIG.prediction.checkpoint_2)
     model_3 = model_factory(model_name_3, img_rows, img_cols, channel, num_classes, dropout_keep_prob, checkpoint=CONFIG.prediction.checkpoint_3)
 

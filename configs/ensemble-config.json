@@ -55,8 +55,10 @@
             "test_add":"test_add.list"
         },
         "parameters":{
-            "width":224,
-            "height":224,
+            "width_densenet":224,
+            "height_densenet":224,
+            "width":299,
+            "height":299,
             "channels":3,
             "dataset_in_use":"original"
         }
