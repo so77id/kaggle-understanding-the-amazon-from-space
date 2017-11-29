@@ -79,14 +79,20 @@ def main(argv):
     test_Y_2 = np.where(test_Y_2>=label_treshold, 1, 0)
     test_Y_3 = np.where(test_Y_3>=label_treshold, 1, 0)
 
-    print(test_Y_1,test_Y_2,test_Y_3)
+    final_Y=[]
+    for idx in range(len(test_Y_1)):
+        tags=[]
+        for yy in range(len(test_Y_1[idx])):
+            preds=[test_Y_1[idx][yy],test_Y_2[idx][yy],test_Y_3[idx][yy]]
+            ensemble_soft_prediction=np.argmax(np.bincount(preds))
+            tags.append(ensemble_soft_prediction)
+        ensemble_soft_prediction.append(tags)
 
-
-    """test_Y = np.where(test_Y>=label_treshold, 1, 0)
+    test_Y = ensemble_soft_prediction
 
     # Get test_add labels
-    test_add_Y = model.predict(dataset["test"]["X_add"])
-    test_add_Y = np.where(test_add_Y>=label_treshold, 1, 0)
+    #test_add_Y = model.predict(dataset["test"]["X_add"])
+    #test_add_Y = np.where(test_add_Y>=label_treshold, 1, 0)
 
     with open(CONFIG.prediction.predict_file, 'w') as writer:
         j = 0
@@ -100,7 +106,7 @@ def main(argv):
                 else:
                     writer.write(file_labels[i] + " ")
 
-        k = 0
+        """k = 0
         for name, label in zip(test_add_filenames, test_add_Y):
             writer.write("{},".format(name))
             file_labels = labels[np.where(label==1)]
@@ -109,11 +115,11 @@ def main(argv):
                 if file_labels.shape[0] - 1 == i:
                     writer.write(file_labels[i] + "\n")
                 else:
-                    writer.write(file_labels[i] + " ")
+                    writer.write(file_labels[i] + " ")"""
 
 
     print("test count:", j)
-    print("test add count:", k)"""
+    print("test add count:", k)
 
     # print(test_Y)
 
