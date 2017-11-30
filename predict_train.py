@@ -23,7 +23,7 @@ def main(argv):
 
     CONFIG = load_configuration(ARGS.config_file)
 
-    dataset = load_dataset(CONFIG, train=False)
+    dataset = load_dataset(CONFIG)
 
 
     # Get variables
