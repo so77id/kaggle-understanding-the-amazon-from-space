@@ -100,7 +100,7 @@ IMAGENET_CHECKPOINTS_FOLDER=./imagenet_checkpoints
 
 TRAIN=train.py
 PREDICT=predict.py
-PREDICT_train=predict_train.py
+PREDICT_TRAIN=predict_train.py
 ENSEMBLE=predict_ensemble.py
 
 CREATE_H5_FILE=$(PREPROCESSING_FOLDER)/create_h5_files.py
@@ -133,7 +133,7 @@ predict p: excuda-devise
 
 predict-train pt: excuda-devise
 	@echo "[Predict train] Predicting test dataset..."
-	@$(PYTHON_COMMAND) $(PREDICT) -c $(CONFIG_FILE)
+	@$(PYTHON_COMMAND) $(PREDICT_TRAIN) -c $(CONFIG_FILE)
 
 ensemble pe: excuda-devise
 	@echo "[Predict] Predicting using ensemble test dataset..."
