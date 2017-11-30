@@ -131,7 +131,7 @@ predict p: excuda-devise
 	@echo "[Predict] Predicting test dataset..."
 	@$(PYTHON_COMMAND) $(PREDICT) -c $(CONFIG_FILE)
 
-predict-train p: excuda-devise
+predict-train pt: excuda-devise
 	@echo "[Predict train] Predicting test dataset..."
 	@$(PYTHON_COMMAND) $(PREDICT) -c $(CONFIG_FILE)
 
@@ -165,7 +165,7 @@ run-train rt: docker-print
 run-predict rp: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make predict CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
-run-predict-train rp: docker-print
+run-predict-train rpt: docker-print
 	@$(DOCKER_RUN_COMMAND) bash -c "make predict-train CUDA_VISIBLE_DEVICES=$(CUDA_VISIBLE_DEVICES) CONFIG_FILE=$(CONFIG_FILE)";
 
 
