@@ -41,7 +41,7 @@ def main(argv):
     with open(CONFIG.prediction.class_encoded_path, 'r') as reader:
         labels = np.array(reader.read().split(",")[:-1])
 
-    test_filenames = []
+    train_filenames = []
 
     # Loading filenames
     print("Load filenames")
@@ -49,8 +49,8 @@ def main(argv):
 
     with open("{}/{}".format(lists_path, CONFIG.dataset.lists.test), 'r') as lines:
         for l in lines:
-            test_filenames.append(l.split('.')[0])
-    test_filenames = np.array(test_filenames)
+            train_filenames.append(l.split('.')[0])
+    train_filenames = np.array(train_filenames)
 
     # Load model
     model = model_factory(model_name, img_rows, img_cols, channel, num_classes, dropout_keep_prob, checkpoint=CONFIG.prediction.checkpoint)
@@ -61,7 +61,7 @@ def main(argv):
     # Writing prediction file
     with open(CONFIG.prediction.predict_file, 'w') as writer, open(CONFIG.prediction.prob_file, 'w') as prob_writer:
         writer.write("image_name,tags\n")
-        for name, label, label_dec in zip(test_filenames, test_Y_, test_Y):
+        for name, label, label_dec in zip(train_filenames, test_Y_, test_Y):
             # Write name
             writer.write("{},".format(name))
             prob_writer.write("{},".format(name))
