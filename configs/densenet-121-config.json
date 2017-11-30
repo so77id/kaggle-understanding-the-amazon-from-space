@@ -9,9 +9,9 @@
     "network":{
         "parameters":{
             "n_labels":17,
-            "batch_size":40,
-            "n_epoch":30,
-            "dropout_keep_prob":0.2,
+            "batch_size":20,
+            "n_epoch":50,
+            "dropout_keep_prob":0.0,
             "model_name":"densenet_121",
             "loss_function":"binary_crossentropy",
             "optimizer":{
@@ -20,7 +20,8 @@
                 "rho":0.9,
                 "epsilon":1e-08,
                 "decay":0.0
-            }
+            },
+            "checkpoint":"./metadata/densenet_121/25-11-2017/1/checkpoints/model.h5"
         },
         "metadata":{
             "path":"./metadata"

@@ -1,18 +1,18 @@
 {
     "prediction":{
-        "threshold":0.30,
+        "threshold":0.10,
         "class_encoded_path":"class_encoded.csv",
-        "checkpoint":"./imagenet_checkpoints/model-inception-v4.h5",
-        "predict_file":"predict.csv"
-
+        "checkpoint":"./metadata/inception_v4/30-11-2017/3/checkpoints/model.h5",
+        "predict_file":"./experiments/inception-v4-30-11-3-predict.csv",
+        "prob_file":"./experiments/inception-v4-30-11-3-probabilities.csv"
     },
     "network":{
         "parameters":{
             "n_labels":17,
             "batch_size":40,
-            "n_epoch":50,
+            "n_epoch":30,
             "dropout_keep_prob":0.2,
-            "model_name":"resnet_50",
+            "model_name":"inception_v4",
             "loss_function":"binary_crossentropy",
             "optimizer":{
                 "name":"rmsprop",
@@ -20,8 +20,7 @@
                 "rho":0.9,
                 "epsilon":1e-08,
                 "decay":0.0
-            },
-            "checkpoint":"./metadata/resnet_50/24-11-2017/4/checkpoints/model.h5"
+            }
         },
         "metadata":{
             "path":"./metadata"

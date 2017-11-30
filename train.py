@@ -41,7 +41,8 @@ def main(argv):
 
 
     # Load model
-    model = model_factory(model_name, img_rows, img_cols, channel, num_classes, dropout_keep_prob)
+
+    model = model_factory(model_name, img_rows, img_cols, channel, num_classes, dropout_keep_prob, CONFIG.network.parameters.checkpoint)
 
     # Loading optimizer
     optimizer = optimizer_factory(CONFIG.network.parameters.optimizer)
