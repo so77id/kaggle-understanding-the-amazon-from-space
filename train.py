@@ -42,7 +42,7 @@ def main(argv):
 
     # Load model
 
-    model = model_factory(model_name, img_rows, img_cols, channel, num_classes, dropout_keep_prob, CONFIG.network.parameters.checkpoint)
+    model = model_factory(model_name, img_rows, img_cols, channel, num_classes, dropout_keep_prob)
 
     # Loading optimizer
     optimizer = optimizer_factory(CONFIG.network.parameters.optimizer)
@@ -59,7 +59,8 @@ def main(argv):
                   epochs=n_epoch,
                   shuffle=True,
                   verbose=1,
-                  callbacks=[tensorboard]
+                  callbacks=[tensorboard],
+                  validation_data=(dataset["val"]["X"], dataset["val"]["Y"]),
               )
     # Save model
     model.save_weights(checkpoint_path)

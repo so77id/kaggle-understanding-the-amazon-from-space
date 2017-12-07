@@ -1,5 +1,6 @@
 import h5py
 import numpy as np
+import math
 from preprocessing.create_h5_files import get_h5_filenames
 
 
@@ -19,10 +20,13 @@ def load_dataset(CONFIG, train=True):
         print("Loading train")
         h5f_train = h5py.File(hdf5_train_file, 'r')
 
-        X = h5f_train['X']
-        Y = h5f_train['Y']
+        X = np.array(h5f_train['X'])
+        Y = np.array(h5f_train['Y'], dtype=np.int)
 
-        dataset = {"train":{"X":np.array(X), "Y":np.array(Y, dtype=np.int)}}
+        size = X.shape[0]
+        train_x_size  = math.floor(size * 0.8)
+
+        dataset = {"train":{"X":X[0:train_x_size], "Y":Y[0:train_x_size]}, "val":{"X":X[train_x_size:size], "Y":Y[train_x_size:size]}}
 
     else:
         print("Loading test")
