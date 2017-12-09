@@ -50,3 +50,8 @@ Create h5 files with datasets
 `make run-dataset CONFIG_FILE=./configs/densenet-121-config.json` --> Densenet configuration
 `make run-dataset CONFIG_FILE=./configs/inception-v4-config.json` --> Inception configuration
 `make run-dataset CONFIG_FILE=./configs/resnet-50-config.json` --> Resnet configuration
+
+
+### run-ensemble
+Create prediction with ensemble using the predictions with networks specified in config file
+`make run-ensemble CONFIG_FILE=./configs/ensemble-config.json GPU=true CUDA_VISIBLE_DEVICES=0`
