@@ -35,26 +35,26 @@ https://www.kaggle.com/c/planet-understanding-the-amazon-from-space
 
 ### run-train
 Run train experiment for specific network
-`make run-train CONFIG_FILE=./configs/densenet-121-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Densenet configuration
-`make run-train CONFIG_FILE=./configs/inception-v4-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Inception configuration
-`make run-train CONFIG_FILE=./configs/resnet-50-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Resnet configuration
+* `make run-train CONFIG_FILE=./configs/densenet-121-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Densenet configuration
+* `make run-train CONFIG_FILE=./configs/inception-v4-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Inception configuration
+* `make run-train CONFIG_FILE=./configs/resnet-50-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Resnet configuration
 
 ### run-predict
 Run predict for specefic trained network
-`make run-predict CONFIG_FILE=./configs/densenet-121-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Densenet configuration
-`make run-predict CONFIG_FILE=./configs/inception-v4-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Inception configuration
-`make run-predict CONFIG_FILE=./configs/resnet-50-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Resnet configuration
+* `make run-predict CONFIG_FILE=./configs/densenet-121-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Densenet configuration
+* `make run-predict CONFIG_FILE=./configs/inception-v4-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Inception configuration
+* `make run-predict CONFIG_FILE=./configs/resnet-50-config.json GPU=true CUDA_VISIBLE_DEVICES=0` --> Resnet configuration
 
 ### run-dataset
 Create h5 files with datasets
-`make run-dataset CONFIG_FILE=./configs/densenet-121-config.json` --> Densenet configuration
-`make run-dataset CONFIG_FILE=./configs/inception-v4-config.json` --> Inception configuration
-`make run-dataset CONFIG_FILE=./configs/resnet-50-config.json` --> Resnet configuration
+* `make run-dataset CONFIG_FILE=./configs/densenet-121-config.json` --> Densenet configuration
+* `make run-dataset CONFIG_FILE=./configs/inception-v4-config.json` --> Inception configuration
+* `make run-dataset CONFIG_FILE=./configs/resnet-50-config.json` --> Resnet configuration
 
 
 ### run-ensemble
 Create prediction with ensemble using the predictions with networks specified in config file
-`make run-ensemble CONFIG_FILE=./configs/ensemble-config.json GPU=true CUDA_VISIBLE_DEVICES=0`
+* `make run-ensemble CONFIG_FILE=./configs/ensemble-config.json GPU=true CUDA_VISIBLE_DEVICES=0`
 
 
 # Authors
